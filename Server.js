@@ -16,13 +16,18 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Static folder (images)
+// ✅ Static folder (images access)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Routes (ALL BEFORE listen)
+// ✅ Routes
 app.use("/api/products", require("./Routes/productRoutes"));
 app.use("/api/orders", require("./Routes/orderRoutes"));
 app.use("/api/banners", require("./Routes/bannerRoutes"));
+
+// ✅ Root route (IMPORTANT)
+app.get("/", (req, res) => {
+  res.send("API is running 🚀");
+});
 
 // ✅ Server start (LAST)
 const PORT = process.env.PORT || 5000;
