@@ -23,9 +23,14 @@ const cloudinary = require("../Config/cloudinary");
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: "banners",
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+  params: async (req, file) => {
+    console.log("📂 Uploading:", file.originalname);
+
+    return {
+      folder: "banners",
+      allowed_formats: ["jpg", "png", "jpeg", "webp"],
+      public_id: Date.now() + "-" + file.originalname,
+    };
   },
 });
 

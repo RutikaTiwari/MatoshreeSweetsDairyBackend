@@ -1,20 +1,23 @@
 const Banner = require("../Model/Banner");
 const cloudinary = require("../Config/cloudinary");
 
-// ✅ POST - Create Banner (Cloudinary Images)
+// ✅ CREATE
 exports.createBanner = async (req, res) => {
   try {
     const { title } = req.body;
 
+    console.log("FILES:", req.files);
+
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: "At least one image is required" });
+      return res.status(400).json({
+        message: "At least one image is required",
+      });
     }
 
-    // ✅ Cloudinary URLs
-    const imagePaths = req.files.map(file => file.path);
+    const imageUrls = req.files.map((file) => file.path);
 
     const banner = new Banner({
-      images: imagePaths,
+      images: imageUrls,
       title,
     });
 
@@ -25,11 +28,14 @@ exports.createBanner = async (req, res) => {
       data: banner,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.log("🔥 ERROR:", error);
+    res.status(500).json({
+      error: error.message || "Something went wrong",
+    });
   }
 };
 
-// ✅ GET - Get All Banners
+// ✅ GET
 exports.getBanners = async (req, res) => {
   try {
     const banners = await Banner.find().sort({ createdAt: -1 });
@@ -43,7 +49,7 @@ exports.getBanners = async (req, res) => {
   }
 };
 
-// ✅ DELETE - Delete Banner + Cloudinary Images
+// ✅ DELETE
 exports.deleteBanner = async (req, res) => {
   try {
     const { id } = req.params;
@@ -54,21 +60,18 @@ exports.deleteBanner = async (req, res) => {
       return res.status(404).json({ message: "Banner not found" });
     }
 
-    // 🔥 Cloudinary se images delete karo
     for (let img of banner.images) {
-      const publicId = img.split("/").pop().split(".")[0]; 
-      // example: banners/abc123
-
+      const publicId = img.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(`banners/${publicId}`);
     }
 
-    // DB se delete
     await Banner.findByIdAndDelete(id);
 
     res.status(200).json({
       message: "Banner deleted successfully",
     });
   } catch (error) {
+    console.log("🔥 DELETE ERROR:", error);
     res.status(500).json({ error: error.message });
   }
 };
