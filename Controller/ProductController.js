@@ -1,37 +1,39 @@
 const Product = require("../Model/Product");
-const fs = require("fs");
-const path = require("path");
+const cloudinary = require("../Config/cloudinary");
 
-// ADD product
+// ✅ ADD PRODUCT (Cloudinary)
 exports.addProduct = async (req, res) => {
   try {
     const { title, description } = req.body;
 
-    const image = req.file ? `uploads/banner/${req.file.filename}` : "";
+    // Cloudinary image URL
+    const image = req.file ? req.file.path : "";
 
     const product = await Product.create({
       title,
       description,
-      image
+      image,
     });
 
     res.status(201).json(product);
   } catch (error) {
+    console.log("ADD ERROR:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
 
-// GET products
+// ✅ GET PRODUCTS
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
   } catch (error) {
+    console.log("GET ERROR:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
 
-// DELETE product
+// ✅ DELETE PRODUCT (Cloudinary se bhi delete)
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -40,21 +42,22 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // delete image
+    // 🔥 Cloudinary delete
     if (product.image) {
-      const imagePath = path.join(__dirname, "..", product.image);
+      try {
+        const publicId = product.image.split("/").pop().split(".")[0];
 
-      fs.unlink(imagePath, (err) => {
-        if (err) console.log("Image delete error:", err);
-      });
+        await cloudinary.uploader.destroy(`products/${publicId}`);
+      } catch (err) {
+        console.log("Cloudinary delete error:", err);
+      }
     }
 
     await Product.findByIdAndDelete(req.params.id);
 
     res.json({ message: "Product deleted successfully" });
-
   } catch (error) {
-    console.log(error); // 👈 add this for debugging
+    console.log("DELETE ERROR:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };

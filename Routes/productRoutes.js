@@ -1,19 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const upload = require("../Middleware/upload");
-
+const upload = require("../Middleware/upload"); // Cloudinary multer
 const {
   addProduct,
   getProducts,
-  deleteProduct
+  deleteProduct,
 } = require("../Controller/ProductController");
 
-// form-data (image upload)
+// ✅ CREATE (image upload → Cloudinary)
 router.post("/", upload.single("image"), addProduct);
 
+// ✅ GET ALL
 router.get("/", getProducts);
 
-module.exports = router;
-
+// ✅ DELETE (Cloudinary se bhi delete hoga controller me)
 router.delete("/:id", deleteProduct);
+
+module.exports = router;
