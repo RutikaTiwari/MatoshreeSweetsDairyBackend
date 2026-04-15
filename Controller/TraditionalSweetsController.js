@@ -1,21 +1,16 @@
 const Sweet = require("../Model/TraditionalSweets");
 
 // Add Sweet
-exports.addTraditionalSweets = async (req, res) => {
+exports.addSweet = async (req, res) => {
   try {
-    const { name, price } = req.body;
-
-    const newSweet = new Sweet({
-      name,
-      price,
-      image: req.file.path, // Cloudinary URL
-    });
-
-    await newSweet.save();
-    res.json(newSweet);
+    res.json({ msg: "Sweet added" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+exports.getSweets = async (req, res) => {
+  res.json([]);
 };
 
 // Get All Sweets
