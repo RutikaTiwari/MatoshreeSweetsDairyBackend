@@ -1,4 +1,4 @@
-const Sweet = require("../Models/Sweet");
+const Sweet = require("../Model/TraditionalSweets");
 
 // ✅ Add Sweet
 exports.addSweet = async (req, res) => {
