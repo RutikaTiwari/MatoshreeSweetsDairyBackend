@@ -1,19 +1,28 @@
-const Sweet = require("../Model/TraditionalSweets");
+const Sweet = require("../Models/Sweet");
 
-// Add Sweet
+// ✅ Add Sweet
 exports.addSweet = async (req, res) => {
   try {
-    res.json({ msg: "Sweet added" });
+    const { name, price } = req.body;
+
+    const newSweet = new Sweet({
+      name,
+      price,
+      image: req.file ? req.file.path : "", // Cloudinary URL
+    });
+
+    await newSweet.save();   // 🔥 IMPORTANT
+
+    res.status(200).json({
+      msg: "Sweet added",
+      data: newSweet,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.getSweets = async (req, res) => {
-  res.json([]);
-};
-
-// Get All Sweets
+// ✅ Get All Sweets
 exports.getSweets = async (req, res) => {
   try {
     const sweets = await Sweet.find();
