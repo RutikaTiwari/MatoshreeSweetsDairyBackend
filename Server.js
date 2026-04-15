@@ -63,7 +63,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/products", require("./Routes/productRoutes"));
 app.use("/api/orders", require("./Routes/orderRoutes"));
 app.use("/api/banners", require("./Routes/bannerRoutes"));
-app.use("/api/sweets", require("./Routes/TraditionalSweetsRoutes"));
+app.use("/api/TraditionalSweets", require("./Routes/TraditionalSweetsRoutes"));
 
 // Root route
 app.get("/", (req, res) => {

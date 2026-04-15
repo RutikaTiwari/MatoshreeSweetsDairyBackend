@@ -1,7 +1,7 @@
 const Sweet = require("../Model/TraditionalSweets");
 
 // Add Sweet
-exports.addSweet = async (req, res) => {
+exports.addTraditionalSweets = async (req, res) => {
   try {
     const { name, price } = req.body;
 
