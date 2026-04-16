@@ -1,6 +1,5 @@
 const Banner = require("../Model/Banner");
 const cloudinary = require("../Config/cloudinary");
-const fs = require("fs");
 
 // ✅ CREATE
 exports.createBanner = async (req, res) => {
@@ -23,9 +22,6 @@ exports.createBanner = async (req, res) => {
         });
 
         imageUrls.push(result.secure_url);
-
-        // delete local file after upload
-        fs.unlinkSync(file.path);
       }
     }
 
@@ -39,6 +35,7 @@ exports.createBanner = async (req, res) => {
       message: "Banner created successfully",
       data: banner,
     });
+
   } catch (error) {
     console.error("🔥 CREATE ERROR:", error);
     res.status(500).json({ error: error.message });
