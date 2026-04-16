@@ -19,6 +19,7 @@ exports.createBanner = async (req, res) => {
     const banner = new Banner({
       images: imageUrls,
       title,
+      subtitle,
     });
 
     await banner.save();
