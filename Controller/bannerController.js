@@ -1,39 +1,47 @@
 const Banner = require("../Model/Banner");
 const cloudinary = require("../Config/cloudinary");
+const fs = require("fs");
 
 // ✅ CREATE
 exports.createBanner = async (req, res) => {
   try {
-    const { title, subtitle } = req.body;
-   
-
+    console.log("BODY:", req.body);
     console.log("FILES:", req.files);
 
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({
-        message: "At least one image is required",
-      });
+    const { title, subtitle } = req.body;
+
+    if (!title || !subtitle) {
+      return res.status(400).json({ error: "Title & Subtitle required" });
     }
 
-    const imageUrls = req.files.map((file) => file.path);
+    let imageUrls = [];
 
-    const banner = new Banner({
-      images: imageUrls,
+    if (req.files && req.files.length > 0) {
+      for (let file of req.files) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: "banners",
+        });
+
+        imageUrls.push(result.secure_url);
+
+        // delete local file after upload
+        fs.unlinkSync(file.path);
+      }
+    }
+
+    const banner = await Banner.create({
       title,
       subtitle,
+      images: imageUrls,
     });
-
-    await banner.save();
 
     res.status(201).json({
       message: "Banner created successfully",
       data: banner,
     });
   } catch (error) {
-    console.log("🔥 ERROR:", error);
-    res.status(500).json({
-      error: error.message || "Something went wrong",
-    });
+    console.error("🔥 CREATE ERROR:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
