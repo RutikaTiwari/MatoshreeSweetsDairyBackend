@@ -4,7 +4,8 @@ const cloudinary = require("../Config/cloudinary");
 // ✅ CREATE
 exports.createBanner = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { title, subtitle } = req.body;
+   
 
     console.log("FILES:", req.files);
 
