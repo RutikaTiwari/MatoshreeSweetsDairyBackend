@@ -39,3 +39,13 @@ exports.getOrders = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+// DELETE ORDER
+router.delete("/:id", async (req, res) => {
+  try {
+    await Order.findByIdAndDelete(req.params.id);
+    res.json({ message: "Order deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
