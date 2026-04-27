@@ -30,7 +30,7 @@ app.use("/api/farsan", require("./Routes/farsanRoutes"));
 app.use("/api/dairy", require("./Routes/dairyRoutes"));
 app.use("/api/contact", require("./Routes/contactRoutes"));
 app.use("/api/chocolates", require("./Routes/chocolateRoutes"));
-app.use("/api/giftpacks", require("./routes/giftPackRoutes"));
+app.use("/api/giftpacks", require("./Routes/giftPackRoutes"));
 app.use("/api/auth", require("./Routes/authRoutes"));
 
 // Root route
